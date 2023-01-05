@@ -86,14 +86,140 @@ Step 5:Add the Sanctum's middleware.(app/Http/Kernel.php)
         'role',
     ];
 
+Step 7:Create user API CRUD รองรับการจัดการ user
 
-Step 7:Create a controller for register user and login/logout.
+    // สร้าง UserController ไว้ใน app/Http/Controllers/Api
 
-    // สร้าง AuthController
+    php artisan make:controller Api/UserController --api --model=User
+    php artisan make:resource UserResource
 
-    php artisan make:controller AuthController
+    // ไฟล์ app/Http/Resources/UserResource.php
+    // นำฟิลด์ทั้งหมดมาจาก user model
 
-    // ไฟล์ app/Http/Controllers/AuthController.php
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'fullname' => $this->fullname,
+            'username' => $this->username,
+            'email' => $this->email,
+            'email_verified_at' => $this->email_verified_at,
+            'password' => $this->password,
+            'tel' => $this->tel,
+            'avatar' => $this->avatar,
+            'role' => $this->role,
+            'remember_token' => $this->remember_token,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+
+    // ไฟล์ app/Http/Controllers/Api/UserController.php
+
+    use App\Http\Resources\UserResource;
+    use App\Models\User;
+    use Illuminate\Support\Facades\Validator;
+
+    public function index()
+    {
+        // fetch data
+        $users = User::latest()->get();
+
+        // return message and data
+        return response()->json([
+            'message' => 'User fetch successfully',
+            'version' => '1',
+            'last_update' => '2023-01-04',
+            'data' => UserResource::collection($users)
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        // Check validator
+        $validator = Validator::make($request->all(),[
+            'fullname' => 'required|string',
+            'username' => 'required|string',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string|confirmed',
+            'tel' => 'required',
+            'role' => 'required|integer'
+        ]);
+
+        // If validate fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        // Create data
+        $user = User::create([
+            'fullname' => $request->fullname,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'tel' => $request->tel,
+            'avatar' => $request->avatar,
+            'role' => $request->role
+        ]);
+
+        // Return message and data
+        return response()->json(['User created successfully', new UserResource($user)]);
+
+    }
+
+    public function show(User $user)
+    {
+        return response()->json($user);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        // Check validator
+        $validator = Validator::make($request->all(),[
+            'fullname' => 'required|string',
+            'username' => 'required|string',
+            // 'email' => 'required|string|unique:users,email',
+            // 'password' => 'required|string|confirmed',
+            'tel' => 'required',
+            'role' => 'required|integer'
+        ]);
+
+        // If validate fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        // Set data
+        $user->fullname = $request->fullname;
+        $user->username = $request->username;
+        // $user->email = $request->email;
+        // $user->password = $request->password;
+        $user->tel = $request->tel;
+        if ($request->role) {
+            $user->role = $request->role;
+        }
+
+        // Update data
+        $user->save();
+
+        // Return message and data
+        return response()->json(['User updated successfully', new UserResource($user)]);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return response()->json('User deleted successfully');
+    }
+
+Step 7.1:Create a controller for register user and login/logout.
+
+    // สำหรับจัดการ token
+    // สร้าง AuthController ไว้ใน app/Http/Controllers/Api
+
+    php artisan make:controller Api/AuthController
+
+    // ไฟล์ app/Http/Controllers/Api/AuthController.php
 
     public function register(Request $request)
     {
@@ -201,11 +327,88 @@ Step 8:Create route in the routes/api.php file
     });
 
 
-Step 9:Setup API version in file.
-        app/Providers/RouteServiceProvider.php
-        app/Http/Middleware/APIVersion.php
+Step 9:Setup API version.
 
+    // https://dev.to/dalelantowork/laravel-8-api-versioning-4e8
 
+    // สร้างโฟลเดอรสำหรับ controller API version
+
+        app/Http/Controllers/Api/V1
+        app/Http/Controllers/Api/V2
+
+    // สร้าง controller ใช้งานสำหรับ version ที่ต้องการ
+        php artisan make:controller Api/V1/MyController
+
+    // ไฟล์ app/Http/Middleware/APIVersion.php
+    php artisan make:middleware APIVersion
+
+        public function handle(Request $request, Closure $next, $guard)
+        {
+            config(['app.api.version' => $guard]);
+            return $next($request);
+        }
+
+    // เพิ่มบรรทัดในไฟล์ app/Http/Kernel.php
+    protected $routeMiddleware = [
+        // ...
+        'api_version' => App\Http\Middleware\APIVersion::class,
+    ];
+
+    // แก้ไขปรับปรุงไฟล์ app/Providers/RouteServiceProvider.php
+    // เพื่อจัดการเส้นทาง route ของเว็บใหม่
+
+    // สร้างตัวแปรสำหรับ namespace ให้กับ Api
+    protected $apiNamespace ='App\Http\Controllers\Api';
+
+    public function boot()
+    {
+        $this->configureRateLimiting();
+        parent::boot();
+    }
+
+    public function map()
+    {
+        $this->mapApiRoutes();
+        $this->mapWebRoutes();
+    }
+
+    protected function mapWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
+    }
+
+    protected function mapApiRoutes()
+    {
+        Route::group([
+            'middleware' => ['api'],
+            'namespace'  => "{$this->namespace}",
+            'prefix'     => 'api',
+        ], function ($router) {
+            require base_path('routes/api.php');
+        });
+
+        Route::group([
+            'middleware' => ['api', 'api_version:v1'],
+            'namespace'  => "{$this->apiNamespace}\V1",
+            'prefix'     => 'api/v1',
+        ], function ($router) {
+            require base_path('routes/api_v1.php');
+        });
+
+        Route::group([
+            'middleware' => ['api', 'api_version:v2'],
+            'namespace'  => "{$this->apiNamespace}\V2",
+            'prefix'     => 'api/v2',
+        ], function ($router) {
+            require base_path('routes/api_v2.php');
+        });
+    }
+
+    // สร้างไฟล์ route สำหรับเวอร์ชั่น
+        routes/api_v1.php
+        routes/api_v2.php
 
 ## Frontend : Get data from API with token.
 

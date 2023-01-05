@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 // Protected route group
 Route::group(['middleware' => 'auth:sanctum'], function() {
+    Route::apiResource('user', UserController::class);
     Route::post('adminregister', [AuthController::class, 'adminregister']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
