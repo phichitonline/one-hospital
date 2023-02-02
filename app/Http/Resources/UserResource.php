@@ -19,14 +19,14 @@ class UserResource extends JsonResource
             'fullname' => $this->fullname,
             'username' => $this->username,
             'email' => $this->email,
-            'email_verified_at' => $this->email_verified_at,
-            'password' => $this->password,
+            // 'email_verified_at' => $this->email_verified_at,
+            // 'password' => $this->password,
             'tel' => $this->tel,
             'avatar' => $this->avatar,
             'role' => $this->role,
-            'remember_token' => $this->remember_token,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'remember_token' => $this->remember_token,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -427,6 +427,24 @@ Step 1:Creat controller
         ]);
 
 
+## Frontend : Laravel 9 + Livewire 2
+
+Step 1:ติดตั้ง Laravel 9
+
+
+Step 2:ติดตั้ง Livewire
+
+    https://laravel-livewire.com/docs/2.x/quickstart#install-livewire
+
+    composer require livewire/livewire
+
+    php artisan livewire:publish --config
+
+    php artisan livewire:publish --assets
+
+Step 3:สร้าง component
+
+    php artisan make:livewire counter
 
 ## License
 
