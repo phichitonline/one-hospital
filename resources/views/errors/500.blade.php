@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>API</title>
 
         <!-- Fonts -->
         <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,30 +21,19 @@
         </style>
     </head>
     <body class="antialiased">
+        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
 
-        <h1>Product list from API</h1>
+            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
+                    <img src="https://dataconversion.ie/wp-content/uploads/2021/02/API-Development-01.png" width="300" alt="">
+                </div>
 
-        <table class="">
-            <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Slug</td>
-                <td>Description</td>
-                <td>Price</td>
-                <td>Image</td>
-            </tr>
-            @foreach ($collection as $item)
-            <tr>
-                <td>{{ $item['id'] }}</td>
-                <td>{{ $item['name'] }}</td>
-                <td>{{ $item['slug'] }}</td>
-                <td>{{ $item['description'] }}</td>
-                <td>{{ $item['price'] }}</td>
-                <td><img src="{{ $item['image'] }}" width="50" alt=""></td>
-            </tr>
-            @endforeach
+                <div class="flex justify-center text-gray-500">
+                    ERROR 500 ({{ Illuminate\Foundation\Application::VERSION }})
+                    {{-- Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) --}}
+                </div>
+            </div>
 
-        </table>
-
+        </div>
     </body>
 </html>
