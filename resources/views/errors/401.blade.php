@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="flex justify-center text-gray-500">
-                    404 Not Found ({{ Illuminate\Foundation\Application::VERSION }})
+                    401 Unauthorized ({{ Illuminate\Foundation\Application::VERSION }})
                     {{-- Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) --}}
                 </div>
             </div>

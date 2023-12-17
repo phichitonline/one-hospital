@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="flex justify-center text-gray-500">
-                    ERROR 500 ({{ Illuminate\Foundation\Application::VERSION }})
+                    500 Internal Server Error ({{ Illuminate\Foundation\Application::VERSION }})
                     {{-- Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) --}}
                 </div>
             </div>
