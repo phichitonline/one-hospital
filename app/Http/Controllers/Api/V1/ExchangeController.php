@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExchangedoctorResource;
 
 class ExchangeController extends Controller
 {
@@ -13,17 +14,19 @@ class ExchangeController extends Controller
         return "Exchange fetch API";
     }
 
-    public function doctor()
+    public function doctor(Request $request)
     {
         $doctor = DB::connection('mysql_hos')->select('
-        SELECT * FROM doctor
+        SELECT d.*,p.`name` AS position
+        FROM doctor d LEFT JOIN doctor_position p ON d.position_id = p.id
+        WHERE d.active = "Y"
         ');
 
         return response()->json([
             'message' => 'Doctor fetch successfully',
             'version' => '1',
             'last_update' => '2023-12-14',
-            'data' => $doctor
+            'data' => ExchangedoctorResource::collection($doctor)
         ]);
     }
 

@@ -21,7 +21,7 @@ use App\Http\Controllers\Api\UserController;
 // });
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
+// Route::post('register', [AuthController::class, 'register']);
 
 // Protected route group
 Route::group(['middleware' => 'auth:sanctum'], function() {

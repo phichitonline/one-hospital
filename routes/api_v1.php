@@ -4,10 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\V1\MyController;
+use App\Http\Controllers\Api\V1\OpdController;
 use App\Http\Controllers\Api\V1\PersonController;
 use App\Http\Controllers\Api\V1\PatientController;
-use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\ExchangeController;
+use App\Http\Controllers\Api\V1\DashboardController;
 
 // Protected route group
 Route::group(['middleware' => 'auth:sanctum'], function() {
@@ -26,5 +27,11 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::get('person/{cid}', [ExchangeController::class, 'person']);
         Route::get('sp_use', [ExchangeController::class, 'sp_use']);
     });
+
+    Route::prefix('opd')->group(function () {
+        Route::get('visit', [OpdController::class, 'visit']);
+    });
+
+
 
 });
