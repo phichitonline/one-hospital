@@ -15,9 +15,9 @@ class OpdvisitResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'visittype' => $this->type,
-            'visit_opd' => $this->opd,
-            'visit_er' => $this->er,
+            'type' => $this->type,
+            'opd' => $this->opd,
+            'er' => $this->er,
         ];
     }
 }
