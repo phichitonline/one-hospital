@@ -92,21 +92,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function count_visit_10726()
-    {
-        $count_visit_opd = DB::connection('mysql_hos')->select('
-        SELECT COUNT(*) AS ptm_opd_vn,COUNT(DISTINCT(hn)) AS ptm_opd_hn,COUNT(IF(vstdate=DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -1 MONTH),"%Y-%m-%d"),vstdate,NULL)) AS pt_opd_today
-        ,(SELECT COUNT(*) FROM ovst WHERE DATE_FORMAT(vstdate,"%Y-%m") = DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -2 MONTH),"%Y-%m")) AS ptm_opd_vn_last
-        FROM ovst WHERE DATE_FORMAT(vstdate,"%Y-%m") = DATE_FORMAT(DATE_ADD(NOW(),INTERVAL -1 MONTH),"%Y-%m")
-        ');
 
-        return response()->json([
-            'message' => 'OPD fetch successfully',
-            'version' => '1',
-            'last_update' => '2024-01-11',
-            'data' => $count_visit_opd
-        ]);
-    }
     // public function count_visit()
     // {
     //     $count_visit = DB::connection('mysql_hos')->select('
