@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\V1\IpdController;
 use App\Http\Controllers\Api\V1\OpdController;
 use App\Http\Controllers\Api\V1\PersonController;
 use App\Http\Controllers\Api\V1\PatientController;
@@ -32,6 +33,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
     Route::prefix('opd')->group(function () {
         Route::get('visit', [OpdController::class, 'visit']);
+    });
+
+    Route::prefix('ipd')->group(function () {
+        Route::get('visit', [IpdController::class, 'visit']);
     });
 
 
